@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -17,7 +18,6 @@ public class ParticipantService {
         List<Participant> participants = participantsToInvite.stream().map(email -> new Participant(email, trip)).toList();
 
         this.participantRepository.saveAll(participants);
-        System.out.println(participants.get(0).getId());
     }
 
     public ParticipantCreateResponse registerParticipantToEvent(String email, Trip trip){
@@ -26,6 +26,20 @@ public class ParticipantService {
         this.participantRepository.save(newParticipant);
 
         return new ParticipantCreateResponse(newParticipant.getId());
+    }
+
+    public Optional<Participant> confirmParticipant(UUID participantId, ParticipantRequestPayload payload){
+        Optional<Participant> participant = this.participantRepository.findById(participantId);
+        Participant rawParticipant = null;
+
+        if(participant.isPresent()){
+            rawParticipant = participant.get();
+            rawParticipant.setConfirmed(true);
+            rawParticipant.setName(payload.name());
+
+            this.participantRepository.save(rawParticipant);
+        }
+        return Optional.ofNullable(rawParticipant);
     }
 
     public void triggerConfirmationEmailToParticipants(UUID tripId){}
