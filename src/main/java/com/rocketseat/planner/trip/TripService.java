@@ -24,7 +24,7 @@ public class TripService implements ITripService{
         var startsAt = LocalDateTime.parse(payload.startsAt(), DateTimeFormatter.ISO_DATE_TIME);
         var endsAt = LocalDateTime.parse(payload.endsAt(), DateTimeFormatter.ISO_DATE_TIME);
         if(endsAt.isBefore(startsAt)){
-            throw new WrongDate("Data final é menor do que data inicial");
+            throw new WrongDate();
         }
     }
 
