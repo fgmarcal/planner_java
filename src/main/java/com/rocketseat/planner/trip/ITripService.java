@@ -9,7 +9,7 @@ public interface ITripService {
 
     private void validateDates(TripRequestPayload payload) throws WrongDate {}
 
-    public Trip createTrip(TripRequestPayload payload);
+    public Trip createTrip(TripRequestPayload payload) throws WrongDate;
 
     public Optional<Trip> getTripDetails(UUID tripId);
 

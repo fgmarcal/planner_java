@@ -4,6 +4,7 @@ import com.rocketseat.planner.activity.ActivityData;
 import com.rocketseat.planner.activity.ActivityRequestPayload;
 import com.rocketseat.planner.activity.ActivityResponse;
 import com.rocketseat.planner.activity.ActivityService;
+import com.rocketseat.planner.exceptions.WrongDate;
 import com.rocketseat.planner.link.LinkData;
 import com.rocketseat.planner.link.LinkRequestPayload;
 import com.rocketseat.planner.link.LinkResponse;
@@ -39,7 +40,13 @@ public class TripController {
 
     @PostMapping
     public ResponseEntity<TripCreateResponse> createTrip(@RequestBody TripRequestPayload payload){
-        Trip newTrip = this.tripService.createTrip(payload);
+        Trip newTrip = null;
+        try {
+            newTrip = this.tripService.createTrip(payload);
+        } catch (WrongDate e) {
+            System.err.println(e.getMessage());
+            return ResponseEntity.internalServerError().build();
+        }
 
         this.participantService.registerParticipantsToEvent(payload.emailsToInvite(), newTrip);
 

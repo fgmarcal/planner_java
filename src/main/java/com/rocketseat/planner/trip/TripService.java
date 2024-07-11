@@ -20,7 +20,7 @@ public class TripService implements ITripService{
     @Autowired
     private ParticipantService participantService;
 
-     private void validateDates(TripRequestPayload payload) throws WrongDate{
+    private void validateDates(TripRequestPayload payload) throws WrongDate{
         var startsAt = LocalDateTime.parse(payload.startsAt(), DateTimeFormatter.ISO_DATE_TIME);
         var endsAt = LocalDateTime.parse(payload.endsAt(), DateTimeFormatter.ISO_DATE_TIME);
         if(endsAt.isBefore(startsAt)){
@@ -28,7 +28,8 @@ public class TripService implements ITripService{
         }
     }
 
-    public Trip createTrip(TripRequestPayload payload){
+    public Trip createTrip(TripRequestPayload payload) throws WrongDate {
+        validateDates(payload);
         Trip newTrip = new Trip(payload);
         return this.tripRepository.save(newTrip);
     }
